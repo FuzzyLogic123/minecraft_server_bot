@@ -28,7 +28,6 @@ async def on_message(message):
     
     elif message.content == '!stop':
         # stop server
-        await message.channel.send('Shutting down server')
         data = stop_server()
         await message.channel.send(data["message"])
 

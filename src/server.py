@@ -17,7 +17,7 @@ ec2 = boto3.resource('ec2')
 client = boto3.client('ec2', config=my_config)
 
 
-def start_server(id=os.getenv("INSTANCE_ID")) -> str:
+def start_server(id=os.getenv("INSTANCE_ID")) -> dict:
 
     while True:
         ec2_instances = client.describe_instances()
@@ -33,9 +33,22 @@ def start_server(id=os.getenv("INSTANCE_ID")) -> str:
                     }
         sleep(1)
 
-def stop_server(id=os.getenv("INSTANCE_ID")) -> None:
+def stop_server(id=os.getenv("INSTANCE_ID")) -> dict:
     ec2_instances = client.describe_instances()
     for instance in ec2_instances["Reservations"][0]["Instances"]:
         if instance["InstanceId"] == id:
             if instance["State"]["Code"] == 16:
                 client.stop_instances(InstanceIds=[id], DryRun=False)
+                return {
+                    "message": "Shutting down Server",
+                    "ip": None
+                }
+            elif instance["State"]["Code"] == 32 or instance["State"]["Code"] == 64:
+                return {
+                    "message": "Server already shutting down",
+                    "ip": None
+                }
+    return {
+        "message": "Server already closed",
+        "ip": None
+    }
