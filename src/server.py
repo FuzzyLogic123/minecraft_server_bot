@@ -10,7 +10,7 @@ load_dotenv()
 
 
 my_config = Config(
-    region_name = 'ap-southeast-2',
+    region_name = 'ap-southeast-4',
 )
 
 ec2 = boto3.resource('ec2')
